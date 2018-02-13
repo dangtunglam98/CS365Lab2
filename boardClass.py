@@ -12,6 +12,7 @@ class Board:
 		self.board = []
 
 	def initial_state(self,rowsNum,colsNum,piecesNum):
+		"""Return initial_state of the board, before any action was made"""
 		self.rowsNum = rowsNum
 		self.colsNum = colsNum
 		self.piecesNum = piecesNum
@@ -37,6 +38,7 @@ class Board:
 			self.board.append(row)
 
 	def move(self,start,end):
+		"""Move a piece to a certain position"""
 		xstart, ystart = start
 		xend, yend = end
 		if self.board[xend][yend] == "O":
@@ -47,10 +49,12 @@ class Board:
 		self.board[xstart][ystart] = "."
 
 	def display_state(self):
+		"""Return the current state of the board"""
 		for row in self.board:
 			print(' '.join(row))
 
 	def ending_state(self):
+		"""Return the winner of the game"""
 		if self.blackNum == 0 or ("O" in self.board[0]):
 			print("White wins")
 			return True
@@ -62,6 +66,7 @@ class Board:
 			return False
 
 	def move_generator(self,player):
+		"""Return possible moves of a player"""
 		moveset = {}
 		for j in range (self.rowsNum-1):
 			for i in range (self.colsNum-1):
@@ -85,6 +90,7 @@ class Board:
 		return moveset
 
 	def display_pos_move(self,moveset):
+		"""Return the possible move on the board"""
 		for keys, values in moveset.items():
 			for i in values:
 				(x,y) = i
@@ -92,12 +98,16 @@ class Board:
 
 a = Board()
 a.initial_state(8,8,2)
-a.display_state()
+
 # print(a.move_generator("X"))
+# a.display_pos_move(a.move_generator("X"))
+
+# a.move((1,0),(2,0))
+a.move((1,0),(2,0))
+a.move((1,5),(3,5))
+a.move((6,4),(4,4))
 a.display_pos_move(a.move_generator("X"))
 a.display_state()
-# a.move((1,0),(2,0))
-# a.move((2,0),(7,0))
-# a.display_state()
+
 # print(a.whiteNum)
 # a.ending_state()
