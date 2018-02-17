@@ -1,23 +1,21 @@
 # Anh Dang and Lam Dang
 # CS365 Lab B
 
+from random import *
 
 class Board:
-	def __init__(self):
-		self.rowsNum = 0
-		self.colsNum = 0
-		self.piecesNum = 0
+	def __init__(self,rowsNum,colsNum,piecesNum):
+		"""Return initial_state of the board, before any action was made"""
+		self.rowsNum = rowsNum # x row
+		self.colsNum = colsNum # y col
+		self.piecesNum = piecesNum
 		self.whiteNum = 0
 		self.blackNum = 0
 		self.board = []
+		self.whitePos = []
+		self.blackPos = []
 
-	def initial_state(self,rowsNum,colsNum,piecesNum):
-		"""Return initial_state of the board, before any action was made"""
-		self.rowsNum = rowsNum
-		self.colsNum = colsNum
-		self.piecesNum = piecesNum
-
-		for whitepiece in range(self.piecesNum):
+		for blackpiece in range(self.piecesNum):
 			row = []
 			for c in range(self.colsNum):
 				row.append("X")
@@ -30,12 +28,45 @@ class Board:
 				row.append(".")
 			self.board.append(row)
 
-		for blackpiece in range(self.piecesNum):
+		for whitepiece in range(self.piecesNum):
 			row = []
 			for c in range(self.colsNum):
 				row.append("O")
 				self.whiteNum += 1
 			self.board.append(row)
+
+		for i in range (self.rowsNum):
+			for j in range (self.colsNum):
+				if self.board[i][j] == "X":
+					self.blackPos.append((i,j))
+				if self.board[i][j] == "O":
+					self.whitePos.append((i,j))
+	
+	# def initial_state(self,rowsNum,colsNum,piecesNum):
+	# 	"""Return initial_state of the board, before any action was made"""
+	# 	self.rowsNum = rowsNum
+	# 	self.colsNum = colsNum
+	# 	self.piecesNum = piecesNum
+
+	# 	for whitepiece in range(self.piecesNum):
+	# 		row = []
+	# 		for c in range(self.colsNum):
+	# 			row.append("X")
+	# 			self.blackNum += 1
+	# 		self.board.append(row)
+
+	# 	for r in range(self.rowsNum - (self.piecesNum*2)):
+	# 		row = []
+	# 		for c in range(self.colsNum):
+	# 			row.append(".")
+	# 		self.board.append(row)
+
+	# 	for blackpiece in range(self.piecesNum):
+	# 		row = []
+	# 		for c in range(self.colsNum):
+	# 			row.append("O")
+	# 			self.whiteNum += 1
+	# 		self.board.append(row)
 
 	def move(self,start,end):
 		"""Move a piece to a certain position"""
@@ -68,8 +99,8 @@ class Board:
 	def move_generator(self,player):
 		"""Return possible moves of a player"""
 		moveset = {}
-		for j in range (self.rowsNum-1):
-			for i in range (self.colsNum-1):
+		for i in range (self.rowsNum):
+			for j in range (self.colsNum):
 				if self.board[i][j] == player:
 					moveset.update({(i,j):[]})
 		for row, col in moveset.keys():
@@ -96,18 +127,14 @@ class Board:
 				(x,y) = i
 				self.board[x][y] = "P"
 
-a = Board()
-a.initial_state(8,8,2)
-
-# print(a.move_generator("X"))
-# a.display_pos_move(a.move_generator("X"))
-
+a = Board(5,4,1)
+print(a.whitePos)
+print(a.blackPos)
+print(a.move_generator("O"))
 # a.move((1,0),(2,0))
-a.move((1,0),(2,0))
-a.move((1,5),(3,5))
-a.move((6,4),(4,4))
-a.display_pos_move(a.move_generator("X"))
+# a.move((1,5),(3,5))
+# a.move((6,4),(4,4))
+# print("   ")
+# print(a.move_generator("X"))
+#a.display_pos_move(a.move_generator("X"))
 a.display_state()
-
-# print(a.whiteNum)
-# a.ending_state()
