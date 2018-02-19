@@ -47,14 +47,28 @@ class Board:
 		start, end = move
 		xstart, ystart = start
 		xend, yend = end
-		if self.board[xend][yend] == "O":
-			self.whiteNum -= 1
-		if self.board[xend][yend] == "X":
-			self.blackNum -= 1
-		endPos = self.board[xend][yend]
-		startPos = self.board[xstart][ystart]
-		self.board[xend][yend] = startPos
-		self.board[xstart][ystart] = "."
+		endSym = self.board[xend][yend]
+		startSym = self.board[xstart][ystart]
+		
+		if startSym == "X":
+			if self.board[xend][yend] == "O":
+				self.whiteNum -= 1
+				self.whitePos.remove((xend,yend))
+			self.blackPos.remove((xstart,ystart))
+			self.blackPos.append((xend,yend))
+			self.board[xend][yend] = startSym
+			self.board[xstart][ystart] = "."
+		elif startSym == "O":
+			if self.board[xend][yend] == "X":
+				self.blackNum -= 1
+				self.blackPos.remove((xend,yend))
+			self.whitePos.remove((xstart,ystart))
+			self.whitePos.append((xend,yend))
+			self.board[xend][yend] = startSym
+			self.board[xstart][ystart] = "."
+		else:
+			pass
+
 		return self
 
 	def display_state(self):
@@ -100,11 +114,29 @@ class Board:
 
 	def moveList(self,player):
 		moveList = []
-		for key,vals in self.move_generator(player).items():
-			for end in vals:
-				moveList.append((key,end))
-		return moveList
+		
+		if player == "X":
+			for row,col in self.blackPos:
+				if (row < self.rowsNum-1) and ((self.board[row + 1][col] != "O") and (self.board[row + 1][col] != "X")):
+					moveList.append(((row,col),(row+1,col)))
+				if (row < self.rowsNum-1) and (col < self.colsNum-1) and (self.board[row+1][col+1] != "X"):
+					moveList.append(((row,col),(row+1,col+1)))
+				if (row < self.rowsNum-1) and (col > 0) and (self.board[row+1][col-1] != "X"):
+					moveList.append(((row,col),(row+1,col-1)))
 
+		if player == "O":
+			for row,col in self.whitePos:
+				if (row > 0) and ((self.board[row - 1][col] != "O") and (self.board[row - 1][col] != "X")):
+					moveList.append(((row,col),(row-1,col)))
+				if (row > 0) and (col < self.colsNum-1) and (self.board[row-1][col+1] != "O"):
+					moveList.append(((row,col),(row-1,col+1)))
+				if (row > 0) and (col > 0) and (self.board[row-1][col-1] != "O"):
+					moveList.append(((row,col),(row-1,col-1)))
+
+		# for key,vals in self.move_generator(player).items():
+		# 	for end in vals:
+		# 		moveList.append((key,end))
+		return moveList
 
 	def display_pos_move(self,moveset):
 		"""Return the possible move on the board"""
@@ -113,7 +145,22 @@ class Board:
 				(x,y) = i
 				self.board[x][y] = "P"
 
-# a = Board(5,5,1)
-# a.transition(((0,0),(1,0))).display_state()
-# print("OK")
+a = Board(5,5,1)
+
+
+# a.transition(((0,0),(1,0)))
+# a.transition(((4,1),(2,1)))
 # a.display_state()
+# print(a.blackPos)
+# print(a.whitePos)
+# a.transition(((2,1),(1,0)))
+# print(a.blackPos)
+# print(a.blackNum)
+# print(a.whitePos)
+# print(a.whiteNum)
+# a.display_state()
+# a.transition(((0,4),(1,3)))
+# print(a.moveList("X"))
+# print(a.moveList("O"))
+
+
