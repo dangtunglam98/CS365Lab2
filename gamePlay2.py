@@ -1,12 +1,16 @@
 from boardClass import Board
 from random import *
-# from utils import *
 
 def switchPlayer(player):
 	if player == "X":
 		return "O"
 	else:
 		return "X"
+
+def creat_board(row,col,state):
+	board = Board(row,col,1)
+	board.update_state(state)
+	return board
 
 def evasive(board,player):
 	if player == "X":
@@ -60,7 +64,7 @@ def alphabeta_search(board, player, d, util):
 			return util(board,player)
 		val = -float('inf')
 		for (m, b) in board.move_states(player):
-			val = max(val, min_value(b, player, alpha, beta, depth+1, util))
+			val = max(val, min_value(creat_board(board.rowsNum,board.colsNum,b), player, alpha, beta, depth+1, util))
 			if val >= beta:
 				return val
 			alpha = max(alpha, val)
@@ -71,7 +75,7 @@ def alphabeta_search(board, player, d, util):
 			return util(board,player)
 		val = float('inf')
 		for (m, b) in board.move_states(switchPlayer(player)):
-			val = min(val, max_value(b, player, alpha, beta, depth+1, util))
+			val = min(val, max_value(creat_board(board.rowsNum,board.colsNum,b), player, alpha, beta, depth+1, util))
 			if val <= alpha:
 				return val
 			beta = min(beta, val)
@@ -81,7 +85,7 @@ def alphabeta_search(board, player, d, util):
 	best_move = None
 
 	for m, b in board.move_states(player):
-		val = min_value(b, player, -float('inf'), float('inf'), 0, util)
+		val = min_value(creat_board(board.rowsNum,board.colsNum,b), player, -float('inf'), float('inf'), 0, util)
 		if val > best_score:
 			best_move = m 
 			best_score = val
@@ -111,5 +115,4 @@ def play_game(heuristic_white,heuristic_black,board):
 
 
 a = Board(5,5,1)
-# print(alphabeta_search(a,"X",3,defend))
 play_game(defend,hidetowin,a)

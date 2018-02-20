@@ -1,7 +1,6 @@
 # Anh Dang and Lam Dang
 # CS365 Lab B
 
-from random import *
 from copy import deepcopy
 
 class Board:
@@ -21,9 +20,13 @@ class Board:
 		
 		self.whiteNum = len(self.whitePos)
 		self.blackNum = len(self.blackPos)
-	
-	def get_board(self):
-		return self
+
+	def update_state(self,state):
+		whitePos, blackPos = state
+		self.whitePos = whitePos
+		self.blackPos = blackPos
+		self.whiteNum = len(self.whitePos)
+		self.blackNum = len(self.blackPos)
 
 	def transition(self,move):
 		"""Move a piece to a certain position"""
@@ -99,31 +102,13 @@ class Board:
 		return move_list
 
 	def move_states(self,player):
-		return [(move, deepcopy(self).transition(move)) for move in self.move_list(player)]
-
-
-	def evasive(self,player):
-		if player == "X":
-			return (self.blackNum + random())
-		else:
-			return (self.whiteNum + random())
-
-	def conqueror(self,player):
-		if player == "X":
-			return (0 - self.whiteNum + random())
-		else:
-			return (0 - self.blackNum + random())
-
-# a = Board(5,5,1)
-# print(a.whitePos)
-# print(a.blackPos)
-# a.display_state()
-# a.transition(((0,0),(4,0)))
-# a.display_state()
-# print(a.terminal_test())
-# print(float('inf')>0)
-# a.move_states("X")
-# a.display_state()
-# c,d = [(1,2),(3,4)]
-# print(c)
-
+		move_states = []
+		for start,end in self.move_list(player):
+			if player == "X":
+				black = [x if (x != start) else end for x in self.blackPos]
+				white = [x for x in self.whitePos if (x != end)]
+			else:
+				white = [x if (x != start) else end for x in self.whitePos]
+				black = [x for x in self.blackPos if (x != end)]
+			move_states.append(((start,end),(white,black)))
+		return move_states
