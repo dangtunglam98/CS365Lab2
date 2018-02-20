@@ -2,6 +2,7 @@
 # CS365 Lab B
 
 from random import *
+from copy import deepcopy
 
 class Board:
 	def __init__(self,rowsNum,colsNum,piecesNum):
@@ -9,63 +10,38 @@ class Board:
 		self.rowsNum = rowsNum # x row
 		self.colsNum = colsNum # y col
 		self.piecesNum = piecesNum
-		self.whiteNum = 0
-		self.blackNum = 0
-		self.board = []
 		self.whitePos = []
 		self.blackPos = []
 
-		for blackpiece in range(self.piecesNum):
-			row = []
-			for c in range(self.colsNum):
-				row.append("X")
-				self.blackNum += 1
-			self.board.append(row)
-
-		for r in range(self.rowsNum - (self.piecesNum*2)):
-			row = []
-			for c in range(self.colsNum):
-				row.append(".")
-			self.board.append(row)
-
-		for whitepiece in range(self.piecesNum):
-			row = []
-			for c in range(self.colsNum):
-				row.append("O")
-				self.whiteNum += 1
-			self.board.append(row)
-
-		for i in range (self.rowsNum):
-			for j in range (self.colsNum):
-				if self.board[i][j] == "X":
-					self.blackPos.append((i,j))
-				if self.board[i][j] == "O":
-					self.whitePos.append((i,j))
+		for j in range(self.colsNum):
+			for i in range(self.piecesNum):
+				self.blackPos.append((i,j))
+			for k in range(self.rowsNum-self.piecesNum,self.rowsNum):
+				self.whitePos.append((k,j))
+		
+		self.whiteNum = len(self.whitePos)
+		self.blackNum = len(self.blackPos)
 	
+	def get_board(self):
+		return self
+
 	def transition(self,move):
 		"""Move a piece to a certain position"""
-		start, end = move
-		xstart, ystart = start
-		xend, yend = end
-		endSym = self.board[xend][yend]
-		startSym = self.board[xstart][ystart]
 		
-		if startSym == "X":
-			if self.board[xend][yend] == "O":
+		start, end = move
+		
+		if start in self.blackPos:
+			if end in self.whitePos:
 				self.whiteNum -= 1
-				self.whitePos.remove((xend,yend))
-			self.blackPos.remove((xstart,ystart))
-			self.blackPos.append((xend,yend))
-			self.board[xend][yend] = startSym
-			self.board[xstart][ystart] = "."
-		elif startSym == "O":
-			if self.board[xend][yend] == "X":
+				self.whitePos.remove(end)
+			self.blackPos.remove(start)
+			self.blackPos.append(end)
+		elif start in self.whitePos:
+			if end in self.blackPos:
 				self.blackNum -= 1
-				self.blackPos.remove((xend,yend))
-			self.whitePos.remove((xstart,ystart))
-			self.whitePos.append((xend,yend))
-			self.board[xend][yend] = startSym
-			self.board[xstart][ystart] = "."
+				self.blackPos.remove(end)
+			self.whitePos.remove(start)
+			self.whitePos.append(end)
 		else:
 			pass
 
@@ -73,94 +49,81 @@ class Board:
 
 	def display_state(self):
 		"""Return the current state of the board"""
-		for row in self.board:
+		board = []
+		for r in range(self.rowsNum):
+			row = []
+			for c in range(self.colsNum):
+				row.append(".")
+			board.append(row)
+		for x,y in self.blackPos:
+			board[x][y] = "X"
+		for x,y in self.whitePos:
+			board[x][y] = "O"
+		for row in board:
 			print(' '.join(row))
 
 	def terminal_test(self):
 		"""Return the winner of the game"""
-		if self.blackNum == 0 or ("O" in self.board[0]):
-			
-			return True
-		elif self.whiteNum == 0 or ("X" in self.board[self.rowsNum - 1]):
-			
-			return True
-		else:
-			
-			return False
 
-	def move_generator(self,player):
-		"""Return possible moves of a player"""
-		moveset = {}
-		for i in range (self.rowsNum):
-			for j in range (self.colsNum):
-				if self.board[i][j] == player:
-					moveset.update({(i,j):[]})
-		for row, col in moveset.keys():
-			if player == "X":
-				if (row < self.rowsNum-1) and ((self.board[row + 1][col] != "O") and (self.board[row + 1][col] != "X")):
-					moveset[(row,col)].append((row+1,col))
-				if (row < self.rowsNum-1) and (col < self.colsNum-1) and (self.board[row+1][col+1] != "X"):
-					moveset[(row,col)].append((row+1,col+1))
-				if (row < self.rowsNum-1) and (col > 0) and (self.board[row+1][col-1] != "X"):
-					moveset[(row,col)].append((row+1,col-1))
-			if player == "O":
-				if (row > 0) and ((self.board[row - 1][col] != "O") and (self.board[row - 1][col] != "X")):
-					moveset[(row,col)].append((row-1,col))
-				if (row > 0) and (col < self.colsNum-1) and (self.board[row-1][col+1] != "O"):
-					moveset[(row,col)].append((row-1,col+1))
-				if (row > 0) and (col > 0) and (self.board[row-1][col-1] != "O"):
-					moveset[(row,col)].append((row-1,col-1))
-		return moveset
+		if self.blackNum == 0 or self.whiteNum == 0:
+			return True
+		for x,y in self.whitePos:
+			if x == 0:
+				return True
+		for x,y in self.blackPos:
+			if x == self.rowsNum - 1:
+				return True
+		return False
 
-	def moveList(self,player):
-		moveList = []
+	def move_list(self,player):
+		move_list = []
 		
 		if player == "X":
 			for row,col in self.blackPos:
-				if (row < self.rowsNum-1) and ((self.board[row + 1][col] != "O") and (self.board[row + 1][col] != "X")):
-					moveList.append(((row,col),(row+1,col)))
-				if (row < self.rowsNum-1) and (col < self.colsNum-1) and (self.board[row+1][col+1] != "X"):
-					moveList.append(((row,col),(row+1,col+1)))
-				if (row < self.rowsNum-1) and (col > 0) and (self.board[row+1][col-1] != "X"):
-					moveList.append(((row,col),(row+1,col-1)))
-
+				if (row < self.rowsNum-1) and (col > 0) and ((row+1,col-1) not in self.blackPos):
+					move_list.append(((row,col),(row+1,col-1)))
+				if (row < self.rowsNum-1) and ((row+1,col) not in self.whitePos) and ((row+1,col) not in self.blackPos):
+					move_list.append(((row,col),(row+1,col)))
+				if (row < self.rowsNum-1) and (col < self.colsNum-1) and ((row+1,col+1) not in self.blackPos):
+					move_list.append(((row,col),(row+1,col+1)))
+				
 		if player == "O":
 			for row,col in self.whitePos:
-				if (row > 0) and ((self.board[row - 1][col] != "O") and (self.board[row - 1][col] != "X")):
-					moveList.append(((row,col),(row-1,col)))
-				if (row > 0) and (col < self.colsNum-1) and (self.board[row-1][col+1] != "O"):
-					moveList.append(((row,col),(row-1,col+1)))
-				if (row > 0) and (col > 0) and (self.board[row-1][col-1] != "O"):
-					moveList.append(((row,col),(row-1,col-1)))
+				if (row > 0) and (col > 0) and ((row-1,col-1) not in self.whitePos):
+					move_list.append(((row,col),(row-1,col-1)))
+				if (row > 0) and ((row-1,col) not in self.whitePos) and ((row-1,col) not in self.blackPos):
+					move_list.append(((row,col),(row-1,col)))
+				if (row > 0) and (col < self.colsNum-1) and ((row-1,col+1) not in self.whitePos):
+					move_list.append(((row,col),(row-1,col+1)))
+				
+		return move_list
 
-		# for key,vals in self.move_generator(player).items():
-		# 	for end in vals:
-		# 		moveList.append((key,end))
-		return moveList
-
-	def display_pos_move(self,moveset):
-		"""Return the possible move on the board"""
-		for keys, values in moveset.items():
-			for i in values:
-				(x,y) = i
-				self.board[x][y] = "P"
-
-a = Board(5,5,1)
+	def move_states(self,player):
+		return [(move, deepcopy(self).transition(move)) for move in self.move_list(player)]
 
 
-# a.transition(((0,0),(1,0)))
-# a.transition(((4,1),(2,1)))
-# a.display_state()
-# print(a.blackPos)
+	def evasive(self,player):
+		if player == "X":
+			return (self.blackNum + random())
+		else:
+			return (self.whiteNum + random())
+
+	def conqueror(self,player):
+		if player == "X":
+			return (0 - self.whiteNum + random())
+		else:
+			return (0 - self.blackNum + random())
+
+# a = Board(5,5,1)
 # print(a.whitePos)
-# a.transition(((2,1),(1,0)))
 # print(a.blackPos)
-# print(a.blackNum)
-# print(a.whitePos)
-# print(a.whiteNum)
 # a.display_state()
-# a.transition(((0,4),(1,3)))
-# print(a.moveList("X"))
-# print(a.moveList("O"))
-
+# a.transition(((0,0),(4,0)))
+# a.display_state()
+# print(a.terminal_test())
+# print(float('inf')>0)
+# a.move_states("X")
+# a.display_state()
+# c,d = [(1,2),(3,4)]
+# print(c)
 
