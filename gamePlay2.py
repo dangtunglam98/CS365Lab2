@@ -1,6 +1,7 @@
 from boardClass import Board
 from random import *
 import time
+import datetime
 def switchPlayer(player):
 	if player == "X":
 		return "O"
@@ -113,10 +114,10 @@ def play_game(heuristic_white,heuristic_black,board):
 			print("----------------------------------------------------------")
 			if board.terminal_test():
 				print(player + " Win")
-				print("The total time to play this game is "+ str(time.time()-total_time)+ " seconds")
+				print("The total time to play this game is "+ str(datetime.timedelta(seconds=time.time()-total_time))+ " (hour/minute/seconds)")
 				print("----------------------------------------------------------")
 				return turn
 
 
-a = Board(5,5,1)
+a = Board(8,8,2)
 play_game(defend,hidetowin,a)
