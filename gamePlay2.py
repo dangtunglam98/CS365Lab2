@@ -1,6 +1,6 @@
 from boardClass import Board
 from random import *
-
+import time
 def switchPlayer(player):
 	if player == "X":
 		return "O"
@@ -69,7 +69,7 @@ def alphabeta_search(board, player, d, util):
 				return val
 			alpha = max(alpha, val)
 		return val
-
+		print()
 	def min_value(board, player, alpha, beta, depth, util):
 		if board.terminal_test() or (depth > d):
 			return util(board,player)
@@ -95,8 +95,10 @@ def alphabeta_search(board, player, d, util):
 
 def play_game(heuristic_white,heuristic_black,board):
 	turn = 0
+	total_time = time.time()
 	while True:
 		for player in ["O","X"]:
+			start_time = time.time()
 			if player == "O":
 				util = heuristic_white
 			else:
@@ -110,9 +112,11 @@ def play_game(heuristic_white,heuristic_black,board):
 			if board.terminal_test():
 				print(player + " Win")
 				return turn
+				print("The total time to plat this hame is "+ str(time.time()-total_time)+ " seconds")
+
+			print("The time to make this move is " + str(time.time() - start_time) + " seconds" )
 
 
 
-
-a = Board(5,5,1)
+a = Board(8,8,2)
 play_game(defend,hidetowin,a)
