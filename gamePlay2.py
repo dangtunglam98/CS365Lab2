@@ -108,15 +108,14 @@ def play_game(heuristic_white,heuristic_black,board):
 			turn += 1
 			board.display_state()
 			print(player + " turn")
-			print("The number of turns made: " str(turn))
-			if board.terminal_test():
-				print(player + " Win")
-				return turn
-				print("The total time to plat this hame is "+ str(time.time()-total_time)+ " seconds")
-
+			print("The number of turns made: " + str(turn))
 			print("The time to make this move is " + str(time.time() - start_time) + " seconds" )
 			print("----------------------------------------------------------")
+			if board.terminal_test():
+				print(player + " Win")
+				print("The total time to play this game is "+ str(time.time()-total_time)+ " seconds")
+				return turn
 
 
-a = Board(8,8,2)
+a = Board(5,5,1)
 play_game(defend,hidetowin,a)
