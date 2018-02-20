@@ -64,6 +64,7 @@ class Board:
 			board[x][y] = "O"
 		for row in board:
 			print(' '.join(row))
+		return board
 
 	def terminal_test(self):
 		"""Return the winner of the game"""

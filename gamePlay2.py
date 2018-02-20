@@ -114,6 +114,7 @@ def play_game(heuristic_white,heuristic_black,board):
 			if board.terminal_test():
 				print(player + " Win")
 				print("The total time to play this game is "+ str(time.time()-total_time)+ " seconds")
+				print("----------------------------------------------------------")
 				return turn
 
 
