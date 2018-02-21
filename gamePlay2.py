@@ -115,9 +115,12 @@ def play_game(heuristic_white,heuristic_black,board):
 			if board.terminal_test():
 				print(player + " Win")
 				print("The total time to play this game is "+ str(datetime.timedelta(seconds=time.time()-total_time))+ " (hour/minute/seconds)")
+				print("The number of white pieces lost: " + str((board.piecesNum * board.colsNum) - board.whiteNum) )
+				print("The number of black pieces lost: " + str((board.piecesNum * board.colsNum) -board.blackNum))
 				print("----------------------------------------------------------")
+
 				return turn
 
 
-a = Board(8,8,2)
+a = Board(5,5,1)
 play_game(defend,hidetowin,a)
