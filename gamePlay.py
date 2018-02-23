@@ -26,7 +26,7 @@ def conqueror(board,player):
 		return (0 - board.blackNum + random())
 
 def defend(board,player):
-	dis = float('inf')
+	dis = -float('inf')
 	winPoint = 0
 	if board.isPlayerWin(player):
 		winPoint = 999
@@ -35,20 +35,20 @@ def defend(board,player):
 	else:
 		pass
 	if player == "X":
-		for p in board.whitePos:
+		for p in board.blackPos:
 			x,y = p
-			if x < dis:
-				dis = x 
+			if x > dis:
+				dis = x
 		return (0 - board.whiteNum + dis + winPoint + random())
 	else:
-		for p in board.blackPos:
-			x,y = p 
-			if (board.rowsNum - 1 - x) < dis:
-				dis = x 
+		for p in board.whitePos:
+			x,y = p
+			if (board.rowsNum -1 - x) > dis:
+				dis = x
 		return (0 - board.blackNum + dis + winPoint + random())
 
 def hidetowin(board,player):
-	dis = float('inf')
+	dis = -float('inf')
 	winPoint = 0
 	if board.isPlayerWin(player):
 		winPoint = 999
@@ -59,15 +59,15 @@ def hidetowin(board,player):
 	if player == "X":
 		for p in board.blackPos:
 			x,y = p
-			if (board.rowsNum - 1 - x) < dis:
+			if x > dis:
 				dis = x
-		return (board.blackNum - dis + winPoint + random())
+		return (board.blackNum + dis + winPoint + random())
 	else:
 		for p in board.whitePos:
 			x,y = p
-			if x < dis:
+			if (board.rowsNum -1 - x) > dis:
 				dis = x
-		return (board.whiteNum - dis + winPoint + random())
+		return (board.whiteNum + dis + winPoint + random())
 
 def heuristic(board,player):
 	score = 0
@@ -143,6 +143,11 @@ def alphabeta_search(board, player, d, util):
 def play_game(heuristic_white,heuristic_black,board):
 	turn = 0
 	total_time = time.time()
+	print("----------------------------------------------------------")
+	print("X: "+heuristic_black.__name__+" vs O: "+heuristic_white.__name__)
+	print("The initial board is ")
+	board.display_state()
+	print("----------------------------------------------------------")
 	while True:
 		for player in ["O","X"]:
 			start_time = time.time()
@@ -153,8 +158,8 @@ def play_game(heuristic_white,heuristic_black,board):
 			move = alphabeta_search(board,player,3,util)
 			board.transition(move)
 			turn += 1
-			board.display_state()
 			print(player + " turn")
+			board.display_state()
 			print("The number of turns made: " + str(turn))
 			print("The time to make this move is " + str(time.time() - start_time) + " seconds" )
 			print("----------------------------------------------------------")
@@ -168,7 +173,7 @@ def play_game(heuristic_white,heuristic_black,board):
 				return turn
 
 
-a = Board(6,6,2)
-a.update_state(([(2,0),(3,0),(2,2),(3,2),(4,2),(3,4),(3,5)],[(0,2),(1,2)]))
-a.display_state()
-play_game(evasive,hidetowin,a)
+# a = Board(6,6,2)
+# a.update_state(([(2,0),(3,0),(2,2),(3,2),(4,2),(3,4),(3,5)],[(0,2),(1,2)]))
+# a.display_state()
+# play_game(evasive,hidetowin,a)

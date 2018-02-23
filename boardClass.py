@@ -1,8 +1,6 @@
 # Anh Dang and Lam Dang
 # CS365 Lab B
 
-from copy import deepcopy
-
 class Board:
 	def __init__(self,rowsNum,colsNum,piecesNum):
 		"""Return initial_state of the board, before any action was made"""
@@ -93,6 +91,18 @@ class Board:
 				if x == 0:
 					return True
 			return False
+
+	def inOpponentSide(self,player):
+		posList = []
+		if player == "X":
+			for row,col in self.blackPos:
+				if row in range(self.rowsNum-int((self.rowsNum)/2),self.rowsNum):
+					posList.append((row,col))
+		else:
+			for row,col in self.whitePos:
+				if row in range(0,int(self.rowsNum/2)):
+					posList.append((row,col))
+		return posList
 
 
 	def move_list(self,player):
