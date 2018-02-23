@@ -67,7 +67,6 @@ class Board:
 		return board
 
 	def terminal_test(self):
-		"""Return the winner of the game"""
 
 		if self.blackNum == 0 or self.whiteNum == 0:
 			return True
@@ -78,6 +77,23 @@ class Board:
 			if x == self.rowsNum - 1:
 				return True
 		return False
+
+	def isPlayerWin(self,player):
+		if player == "X":
+			if self.whiteNum == 0:
+				return True
+			for x,y in self.blackPos:
+				if x == self.rowsNum - 1:
+					return True
+			return False
+		else:
+			if self.blackNum == 0:
+				return True
+			for x,y in self.whitePos:
+				if x == 0:
+					return True
+			return False
+
 
 	def move_list(self,player):
 		move_list = []
