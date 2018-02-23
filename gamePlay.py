@@ -1,31 +1,40 @@
+# Anh Dang and Lam Dang
+# CS365 Lab B
+
 from boardClass import Board
 from random import *
 import time
 import datetime
+
 def switchPlayer(player):
+	"""Switching between two player"""
 	if player == "X":
 		return "O"
 	else:
 		return "X"
 
 def creat_board(row,col,state):
+	"""Creat a board wit specific state"""
 	board = Board(row,col,1)
 	board.update_state(state)
 	return board
 
 def evasive(board,player):
+	"""Return a value for the input board state"""
 	if player == "X":
 		return (board.blackNum + random())
 	else:
 		return (board.whiteNum + random())
 
 def conqueror(board,player):
+	"""Return a value for the input board state"""
 	if player == "X":
 		return (0 - board.whiteNum + random())
 	else:
 		return (0 - board.blackNum + random())
 
 def defend(board,player):
+	"""Return a value for the input board state"""
 	dis = -float('inf')
 	winPoint = 0
 	if board.isPlayerWin(player):
@@ -48,6 +57,7 @@ def defend(board,player):
 		return (0 - board.blackNum + dis + winPoint + random())
 
 def hidetowin(board,player):
+	"""Return a value for the input board state"""
 	dis = -float('inf')
 	winPoint = 0
 	if board.isPlayerWin(player):
@@ -101,10 +111,10 @@ def heuristic(board,player):
 
 
 def alphabeta_search(board, player, d, util):
-	"""Search game to determine best action; use alpha-beta pruning.
-	This version cuts off search and uses an evaluation function."""
+	"""Search game to determine best action; use alpha-beta pruning."""
 
 	def max_value(board, player, alpha, beta, depth, util):
+		"""Return the max value of the game forward states"""
 		if board.terminal_test() or (depth > d):
 			return util(board,player)
 		val = -float('inf')
@@ -114,8 +124,9 @@ def alphabeta_search(board, player, d, util):
 				return val
 			alpha = max(alpha, val)
 		return val
-		print()
+	
 	def min_value(board, player, alpha, beta, depth, util):
+		"""Return the min value of the game forward states"""
 		if board.terminal_test() or (depth > d):
 			return util(board,player)
 		val = float('inf')
@@ -128,7 +139,7 @@ def alphabeta_search(board, player, d, util):
 
 	min_score = float('inf')
 	best_score = -float('inf')
-	best_move = None
+	best_move = board.move_list(player)[0]
 
 	for m, b in board.move_states(player):
 		val = min_value(creat_board(board.rowsNum,board.colsNum,b), player, best_score, min_score, 0, util)
@@ -136,11 +147,10 @@ def alphabeta_search(board, player, d, util):
 			best_move = m
 			best_score = val
 		min_score = min(min_score,val)
-
-	# move, board = argmax(board.move_states(player), lambda ((m, b)): min_value(b, -float('inf'), float('inf'), 0))
 	return best_move
 
 def play_game(heuristic_white,heuristic_black,board):
+	"""Play a game and return the number of turns made between two choosen heuristic"""
 	turn = 0
 	total_time = time.time()
 	print("----------------------------------------------------------")
@@ -166,14 +176,8 @@ def play_game(heuristic_white,heuristic_black,board):
 			if board.terminal_test():
 				print(player + ": "+util.__name__ + " Win")
 				print("The total time to play this game is "+ str(datetime.timedelta(seconds=time.time()-total_time))+ " (hour/minute/seconds)")
-				print("The number of white pieces lost: " + str((board.piecesNum * board.colsNum) - board.whiteNum) )
-				print("The number of black pieces lost: " + str((board.piecesNum * board.colsNum) -board.blackNum))
+				print("The number of white (O) pieces lost: " + str((board.piecesNum * board.colsNum) - board.whiteNum) )
+				print("The number of black (X) pieces lost: " + str((board.piecesNum * board.colsNum) -board.blackNum))
 				print("----------------------------------------------------------")
-
 				return turn
 
-
-# a = Board(6,6,2)
-# a.update_state(([(2,0),(3,0),(2,2),(3,2),(4,2),(3,4),(3,5)],[(0,2),(1,2)]))
-# a.display_state()
-# play_game(evasive,hidetowin,a)

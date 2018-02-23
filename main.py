@@ -1,3 +1,6 @@
+# Anh Dang and Lam Dang
+# CS365 Lab B
+
 from gamePlay import *
 
 def main():

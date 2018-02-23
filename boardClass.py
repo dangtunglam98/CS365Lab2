@@ -3,7 +3,7 @@
 
 class Board:
 	def __init__(self,rowsNum,colsNum,piecesNum):
-		"""Return initial_state of the board, before any action was made"""
+		"""initial_state of the board, before any action was made"""
 		self.rowsNum = rowsNum # x row
 		self.colsNum = colsNum # y col
 		self.piecesNum = piecesNum
@@ -20,6 +20,7 @@ class Board:
 		self.blackNum = len(self.blackPos)
 
 	def update_state(self,state):
+		"""Update the board with input state"""
 		whitePos, blackPos = state
 		self.whitePos = whitePos
 		self.blackPos = blackPos
@@ -27,8 +28,7 @@ class Board:
 		self.blackNum = len(self.blackPos)
 
 	def transition(self,move):
-		"""Move a piece to a certain position"""
-		
+		"""Update the board state after moving a piece to a certain position"""
 		start, end = move
 		
 		if start in self.blackPos:
@@ -49,7 +49,7 @@ class Board:
 		return self
 
 	def display_state(self):
-		"""Return the current state of the board"""
+		"""Display the current state of the board"""
 		board = []
 		for r in range(self.rowsNum):
 			row = []
@@ -65,7 +65,7 @@ class Board:
 		return board
 
 	def terminal_test(self):
-
+		"""Check if it is the endgame state"""
 		if self.blackNum == 0 or self.whiteNum == 0:
 			return True
 		for x,y in self.whitePos:
@@ -77,6 +77,7 @@ class Board:
 		return False
 
 	def isPlayerWin(self,player):
+		"""Check if the input player won the game"""
 		if player == "X":
 			if self.whiteNum == 0:
 				return True
@@ -106,8 +107,8 @@ class Board:
 
 
 	def move_list(self,player):
+		"""Generate all possible moves for the input player"""
 		move_list = []
-		
 		if player == "X":
 			for row,col in self.blackPos:
 				if (row < self.rowsNum-1) and (col > 0) and ((row+1,col-1) not in self.blackPos):
@@ -125,10 +126,11 @@ class Board:
 					move_list.append(((row,col),(row-1,col)))
 				if (row > 0) and (col < self.colsNum-1) and ((row-1,col+1) not in self.whitePos):
 					move_list.append(((row,col),(row-1,col+1)))
-				
+	
 		return move_list
 
 	def move_states(self,player):
+		"""Return all possible moves and states after that move for the input player"""
 		move_states = []
 		for start,end in self.move_list(player):
 			if player == "X":
