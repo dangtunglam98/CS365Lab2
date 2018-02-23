@@ -139,7 +139,7 @@ def alphabeta_search(board, player, d, util):
 
 	min_score = float('inf')
 	best_score = -float('inf')
-	best_move = board.move_list(player)[0]
+	best_move = None #board.move_list(player)[randint(0,(len(board.move_list(player))-1))]
 
 	for m, b in board.move_states(player):
 		val = min_value(creat_board(board.rowsNum,board.colsNum,b), player, best_score, min_score, 0, util)
@@ -181,3 +181,7 @@ def play_game(heuristic_white,heuristic_black,board):
 				print("----------------------------------------------------------")
 				return turn
 
+# a = Board(6,6,2)
+# a.update_state(([(2,0),(3,0),(4,1),(2,2),(3,2),(3,3),(3,4),(3,5)],[(1,5),(1,2)]))
+# a.display_state()
+# play_game(evasive,hidetowin,a)
