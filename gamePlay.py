@@ -79,29 +79,29 @@ def hidetowin(board,player):
 				dis = x
 		return (board.whiteNum + dis + winPoint + random())
 
-def heuristic(board,player):
+def trytowin(board,player):
 	score = 0
 	if player == "X":
 		for row,col in board.blackPos:
-			score += (row+1)*50
+			score += (row**2+row+2)*5
 			if (row-1,col-1) in board.blackPos:
-				score += 20
+				score += int(board.rowsNum/2)*5
 			if (row-1,col+1) in board.blackPos:
-				score += 20
+				score += int(board.rowsNum/2)*5
 		for row,col in board.whitePos:
-			score -= (board.rowsNum-row)*50
+			score -= ((board.rowsNum-1-row)**2+(board.rowsNum-1-row)+2)*5
 		if board.isPlayerWin(player):
 			score += 9999
 
 	else:
 		for row,col in board.whitePos:
-			score += (row+1)*50
-			if (row-1,col-1) in board.whitePos:
-				score += 20
-			if (row-1,col+1) in board.whitePos:
-				score += 20
+			score += ((board.rowsNum-1-row)**2+(board.rowsNum-1-row)+2)*5
+			if (row+1,col-1) in board.whitePos:
+				score += int(board.rowsNum/2)*5
+			if (row+1,col+1) in board.whitePos:
+				score += int(board.rowsNum/2)*5
 		for row,col in board.blackPos:
-			score -= (board.rowsNum-row)*50
+			score -= (row**2+row+2)*5
 		if board.isPlayerWin(player):
 			score += 9999
 	score += random()
@@ -139,7 +139,7 @@ def alphabeta_search(board, player, d, util):
 
 	min_score = float('inf')
 	best_score = -float('inf')
-	best_move = None #board.move_list(player)[randint(0,(len(board.move_list(player))-1))]
+	best_move = board.move_list(player)[randint(0,(len(board.move_list(player))-1))]
 
 	for m, b in board.move_states(player):
 		val = min_value(creat_board(board.rowsNum,board.colsNum,b), player, best_score, min_score, 0, util)
@@ -174,6 +174,7 @@ def play_game(heuristic_white,heuristic_black,board):
 			print("The time to make this move is " + str(time.time() - start_time) + " seconds" )
 			print("----------------------------------------------------------")
 			if board.terminal_test():
+				print("X: "+heuristic_black.__name__+" vs O: "+heuristic_white.__name__)
 				print(player + ": "+util.__name__ + " Win")
 				print("The total time to play this game is "+ str(datetime.timedelta(seconds=time.time()-total_time))+ " (hour/minute/seconds)")
 				print("The number of white (O) pieces lost: " + str((board.piecesNum * board.colsNum) - board.whiteNum) )
@@ -181,7 +182,3 @@ def play_game(heuristic_white,heuristic_black,board):
 				print("----------------------------------------------------------")
 				return turn
 
-# a = Board(6,6,2)
-# a.update_state(([(2,0),(3,0),(4,1),(2,2),(3,2),(3,3),(3,4),(3,5)],[(1,5),(1,2)]))
-# a.display_state()
-# play_game(evasive,hidetowin,a)

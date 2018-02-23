@@ -13,8 +13,8 @@ def main():
 	print("2. Conqueror")
 	print("3. Hidetowin")
 	print("4. Defend")
-	print("5. Heuristic\n")
-	white = int(input("Choose heuristic for white "))
+	print("5. Trytowin\n")
+	white = int(input("Choose heuristic for white (O) "))
 	if white == 1:
 		whiteheu = evasive 
 	elif white == 2:
@@ -24,10 +24,10 @@ def main():
 	elif white == 4:
 		whiteheu = defend 
 	elif white == 5:
-		whiteheu = heuristic 
+		whiteheu = trytowin 
 	else:
 		print("Invalid input")
-	black = int(input("Choose heuristic for black "))
+	black = int(input("Choose heuristic for black (X) "))
 	if black == 1:
 		blackheu = evasive 
 	elif black == 2:
@@ -37,7 +37,7 @@ def main():
 	elif black == 4:
 		blackheu = defend 
 	elif black == 5:
-		blackheu = heuristic 
+		blackheu = trytowin 
 	else:
 		print("Invalid input")
 	play_game(whiteheu,blackheu,board)
