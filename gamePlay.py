@@ -164,7 +164,7 @@ def play_game(heuristic_white,heuristic_black,board):
 			print("The time to make this move is " + str(time.time() - start_time) + " seconds" )
 			print("----------------------------------------------------------")
 			if board.terminal_test():
-				print(player + " Win")
+				print(player + ": "+util.__name__ + " Win")
 				print("The total time to play this game is "+ str(datetime.timedelta(seconds=time.time()-total_time))+ " (hour/minute/seconds)")
 				print("The number of white pieces lost: " + str((board.piecesNum * board.colsNum) - board.whiteNum) )
 				print("The number of black pieces lost: " + str((board.piecesNum * board.colsNum) -board.blackNum))
